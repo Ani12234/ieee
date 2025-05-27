@@ -1,0 +1,85 @@
+{
+  "hash": "f1ec8381",
+  "configHash": "fe140244",
+  "lockfileHash": "0a5eaa7a",
+  "browserHash": "109b4706",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "c5142562",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "43b05c92",
+      "needsInterop": true
+    },
+    "three": {
+      "src": "../../node_modules/three/build/three.module.js",
+      "file": "three.js",
+      "fileHash": "05171510",
+      "needsInterop": false
+    },
+    "@react-three/fiber": {
+      "src": "../../node_modules/@react-three/fiber/dist/react-three-fiber.esm.js",
+      "file": "@react-three_fiber.js",
+      "fileHash": "40cdb2db",
+      "needsInterop": false
+    },
+    "@react-three/drei": {
+      "src": "../../node_modules/@react-three/drei/index.js",
+      "file": "@react-three_drei.js",
+      "fileHash": "8dcd7f7f",
+      "needsInterop": false
+    },
+    "@react-three/rapier": {
+      "src": "../../node_modules/@react-three/rapier/dist/react-three-rapier.esm.js",
+      "file": "@react-three_rapier.js",
+      "fileHash": "86f61341",
+      "needsInterop": false
+    },
+    "meshline": {
+      "src": "../../node_modules/meshline/dist/index.js",
+      "file": "meshline.js",
+      "fileHash": "3dc16fcd",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "vision_bundle-DIJDKRYK": {
+      "file": "vision_bundle-DIJDKRYK.js"
+    },
+    "rapier.es-BZAISANW": {
+      "file": "rapier__es-BZAISANW.js"
+    },
+    "chunk-563FDNKK": {
+      "file": "chunk-563FDNKK.js"
+    },
+    "chunk-XNLQ7KWY": {
+      "file": "chunk-XNLQ7KWY.js"
+    },
+    "chunk-EGRHWZRV": {
+      "file": "chunk-EGRHWZRV.js"
+    },
+    "chunk-5PMHXMLD": {
+      "file": "chunk-5PMHXMLD.js"
+    },
+    "chunk-32E4H3EV": {
+      "file": "chunk-32E4H3EV.js"
+    },
+    "chunk-MRZ46SNC": {
+      "file": "chunk-MRZ46SNC.js"
+    },
+    "chunk-JOAPSBEF": {
+      "file": "chunk-JOAPSBEF.js"
+    },
+    "hls-YU2LW3WX": {
+      "file": "hls-YU2LW3WX.js"
+    },
+    "chunk-G3PMV62Z": {
+      "file": "chunk-G3PMV62Z.js"
+    }
+  }
+}

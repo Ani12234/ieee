@@ -1,0 +1,29 @@
+.share{
+    animation: textanime 0.8s infinite;
+    transition: opacity 0.4s ease;
+}
+
+@keyframes textanime {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.loadingLine{
+    animation: loading 6s 1 forwards;
+    transition: width 0.5s ease;
+}
+
+@keyframes loading {
+    0% {
+        width: 0;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
