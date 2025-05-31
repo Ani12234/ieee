@@ -68,7 +68,14 @@ const loginUser = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRE }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    // Determine environment and set cookie options accordingly
+    const isProduction = process.env.NODE_ENV === 'production';
+    res.cookie("token", token, { 
+      httpOnly: true, 
+      secure: isProduction, // Use secure cookies in production
+      sameSite: isProduction ? 'none' : 'lax', // Needed for cross-origin in production
+      domain: isProduction ? undefined : 'localhost' // Only specify domain in dev if needed
+    }).json({
       success: true,
       message: "Logged in successfully",
       user: {
@@ -90,7 +97,14 @@ const loginUser = async (req, res) => {
 //logout
 
 const logoutUser = (req, res) => {
-  res.clearCookie("token").json({
+  // Determine environment and set cookie options consistently with login
+  const isProduction = process.env.NODE_ENV === 'production';
+  res.clearCookie("token", { 
+    httpOnly: true, 
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    domain: isProduction ? undefined : 'localhost'
+  }).json({
     success: true,
     message: "Logged out successfully!",
   });

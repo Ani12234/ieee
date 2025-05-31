@@ -13,8 +13,19 @@ require("dotenv").config(); // Load environment variables from .env file
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log("MongoDB connection error:", error));
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((error) => {
+    console.error("MongoDB connection error:", {
+      message: error.message,
+      stack: error.stack,
+      time: new Date().toISOString()
+    });
+    // Log the MongoDB URI without exposing credentials
+    const redactedUri = process.env.MONGO_URI 
+      ? process.env.MONGO_URI.replace(/mongodb(\+srv)?:\/\/([^:]+):([^@]+)@/, 'mongodb$1://$2:***@')
+      : 'Not provided';
+    console.error("Connection attempted with URI pattern:", redactedUri);
+  });
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -40,6 +51,8 @@ app.use(cookieParser());
 // Increase payload size limit for file uploads (50MB)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// Support both URL patterns for backward compatibility
+
 app.use("/api/auth", authRouter);
 // app.use("/operate/qr-data", qrRoutes);
 app.use("/api/events", eventRoutes);
