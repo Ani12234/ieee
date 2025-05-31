@@ -12,7 +12,7 @@ export const registerUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      `http://localhost:5000/auth/register`,
+      `${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
       formData,
       {
         withCredentials: true,
@@ -28,7 +28,7 @@ export const loginUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      `http://localhost:5000/auth/login`,
+      `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
       formData,
       {
         withCredentials: true,
@@ -40,18 +40,28 @@ export const loginUser = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk(
-  "auth/logout",
-
-  async () => {
-    const response = await axios.post(
-      `http://localhost:5000/auth/logout`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-
-    return response.data;
+  "/auth/logout",
+  async (_, { dispatch }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      
+      // Clear any stored tokens from local storage if you're using them
+      localStorage.removeItem('authToken');
+      
+      // After successful logout, redirect to home page
+      window.location.href = '/';
+      
+      return response.data;
+    } catch (error) {
+      console.error("Logout error:", error);
+      return { success: true }; // Still treat as success for UI purposes
+    }
   }
 );
 
@@ -60,7 +70,7 @@ export const checkAuth = createAsyncThunk(
 
   async () => {
     const response = await axios.get(
-      `http://localhost:5000/auth/check-auth`,
+      `${import.meta.env.VITE_API_BASE_URL}/api/auth/check-auth`,
       {
         withCredentials: true,
         headers: {
