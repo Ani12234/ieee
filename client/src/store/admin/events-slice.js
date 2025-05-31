@@ -18,7 +18,7 @@ export const fetchAllEvents = createAsyncThunk(
   "/events/fetchAllEvents",
   async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/api/events`);
+      const response = await axios.get(`${API_BASE_URL}/events`);
       return response.data;
     } catch (error) {
       console.error("Error fetching events:", error);
