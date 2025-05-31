@@ -29,18 +29,23 @@ mongoose
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+// Enhanced CORS configuration for cross-origin authentication
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://ieee-beta-five.vercel.app"],
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    credentials: true,
+    origin: function(origin, callback) {
+      const allowedOrigins = ["http://localhost:5173", "https://ieee-beta-five.vercel.app"];
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      } else {
+        console.log('CORS blocked origin:', origin);
+        return callback(null, false);
+      }
+    },
+    credentials: true, // Required for cookies, authorization headers with HTTPS
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
   })
 );
 app.get("/", (req, res) => {
@@ -52,8 +57,8 @@ app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Support both URL patterns for backward compatibility
-
 app.use("/api/auth", authRouter);
+app.use("/auth", authRouter); // Legacy route support for backward compatibility
 // app.use("/operate/qr-data", qrRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/meetings", meetingRoutes);

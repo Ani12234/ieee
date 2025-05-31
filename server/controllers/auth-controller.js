@@ -40,12 +40,15 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    console.log(`Login attempt for email: ${email}`);
     const checkUser = await User.findOne({ email });
-    if (!checkUser)
+    if (!checkUser) {
+      console.log(`User not found: ${email}`);
       return res.json({
         success: false,
         message: "User doesn't exists! Please register first",
       });
+    }
 
     const checkPasswordMatch = await bcrypt.compare(
       password,
@@ -70,12 +73,25 @@ const loginUser = async (req, res) => {
 
     // Determine environment and set cookie options accordingly
     const isProduction = process.env.NODE_ENV === 'production';
-    res.cookie("token", token, { 
+    console.log(`Setting cookie in ${isProduction ? 'production' : 'development'} mode`);
+    
+    // For debugging in production
+    console.log('JWT Token generated successfully with payload:', {
+      id: checkUser._id,
+      role: checkUser.role,
+      email: checkUser.email
+    });
+    
+    const cookieOptions = { 
       httpOnly: true, 
       secure: isProduction, // Use secure cookies in production
       sameSite: isProduction ? 'none' : 'lax', // Needed for cross-origin in production
       domain: isProduction ? undefined : 'localhost' // Only specify domain in dev if needed
-    }).json({
+    };
+    
+    console.log('Cookie options:', cookieOptions);
+    
+    res.cookie("token", token, cookieOptions).json({
       success: true,
       message: "Logged in successfully",
       user: {
