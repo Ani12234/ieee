@@ -78,6 +78,11 @@ function AdminDashboard() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [sortOption, setSortOption] = useState("date-asc");
 
+  // Delete confirmation modal state
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null); // { id, title, type: 'event' | 'meeting' }
+  const [confirmItemNameInput, setConfirmItemNameInput] = useState("");
+
   // Redux state
   const { eventsList, isLoading: eventsLoading } = useSelector((state) => state.events);
   const { meetingsList, isLoading: meetingsLoading } = useSelector((state) => state.meetings);
@@ -170,26 +175,34 @@ function AdminDashboard() {
 
   // Events delete handler
   function handleEventDelete(id) {
-    dispatch(deleteEvent(id)).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchAllEvents());
-        toast({
-          title: "Event deleted successfully",
-        });
-      }
-    });
+    const event = eventsList.find(e => e.id === id || e._id === id); // Handle both 'id' and '_id'
+    if (event) {
+      setItemToDelete({ id: event.id || event._id, title: event.title, type: 'event' });
+      setConfirmItemNameInput("");
+      setShowDeleteConfirmModal(true);
+    } else {
+      toast({
+        title: "Error",
+        description: "Event not found for deletion.",
+        variant: "destructive",
+      });
+    }
   }
   
   // Meetings delete handler
   function handleMeetingDelete(id) {
-    dispatch(deleteMeeting(id)).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchAllMeetings());
-        toast({
-          title: "Meeting deleted successfully",
-        });
-      }
-    });
+    const meeting = meetingsList.find(m => m.id === id || m._id === id); // Handle both 'id' and '_id'
+    if (meeting) {
+      setItemToDelete({ id: meeting.id || meeting._id, title: meeting.title, type: 'meeting' });
+      setConfirmItemNameInput("");
+      setShowDeleteConfirmModal(true);
+    } else {
+      toast({
+        title: "Error",
+        description: "Meeting not found for deletion.",
+        variant: "destructive",
+      });
+    }
   }
 
   // Event form validation
@@ -278,10 +291,61 @@ function AdminDashboard() {
   };
 
   // Reset filters
-  const resetFilters = () => {
+  function resetFilters() {
     setSearchTerm("");
     setActiveCategory("all");
     setSortOption("date-asc");
+  }
+
+  // Confirm item deletion
+  function handleConfirmItemDelete() {
+    if (!itemToDelete || confirmItemNameInput !== itemToDelete.title) {
+      toast({
+        title: "Error",
+        description: "The entered name does not match. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const currentItemType = itemToDelete.type;
+    const currentItemId = itemToDelete.id;
+
+    setShowDeleteConfirmModal(false);
+    setItemToDelete(null);
+    setConfirmItemNameInput("");
+
+    if (currentItemType === 'event') {
+      dispatch(deleteEvent(currentItemId)).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllEvents());
+          toast({
+            title: "Event deleted successfully",
+          });
+        } else {
+          toast({
+            title: "Error deleting event",
+            description: data?.payload?.message || "Could not delete the event.",
+            variant: "destructive",
+          });
+        }
+      });
+    } else if (currentItemType === 'meeting') {
+      dispatch(deleteMeeting(currentItemId)).then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchAllMeetings());
+          toast({
+            title: "Meeting deleted successfully",
+          });
+        } else {
+          toast({
+            title: "Error deleting meeting",
+            description: data?.payload?.message || "Could not delete the meeting.",
+            variant: "destructive",
+          });
+        }
+      });
+    }
   };
 
   const categories = getEventCategories();
@@ -683,6 +747,61 @@ function AdminDashboard() {
           </div>
         </SheetContent>
       </Sheet>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirmModal && itemToDelete && (
+      <Sheet
+        open={showDeleteConfirmModal}
+        onOpenChange={() => {
+          setShowDeleteConfirmModal(false);
+          setItemToDelete(null);
+          setConfirmItemNameInput("");
+        }}
+      >
+        <SheetContent side="center" className="w-full max-w-md bg-white p-6 rounded-lg shadow-xl text-black fixed inset-0 m-auto z-50 flex flex-col justify-center items-center">
+          <SheetHeader className="w-full text-center mb-4">
+            <SheetTitle className="text-xl font-bold text-gray-900">
+              Confirm Deletion
+            </SheetTitle>
+          </SheetHeader>
+          <div className="mt-4 space-y-4 w-full">
+            <p className="text-sm text-gray-700 text-center">
+              To confirm deletion of the {itemToDelete.type} named <br/>
+              <strong className="block mt-1 text-gray-900 break-all font-semibold text-md">{itemToDelete.title}</strong><br/>
+              please type its full name below.
+            </p>
+            <Input
+              type="text"
+              value={confirmItemNameInput}
+              onChange={(e) => setConfirmItemNameInput(e.target.value)}
+              placeholder={`Type "${itemToDelete.title}"`}
+              className="w-full border-gray-300 focus:border-red-500 focus:ring-red-500 text-center"
+            />
+            <div className="flex justify-center space-x-3 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowDeleteConfirmModal(false);
+                  setItemToDelete(null);
+                  setConfirmItemNameInput("");
+                }}
+                className="px-6 py-2"
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleConfirmItemDelete}
+                disabled={confirmItemNameInput !== itemToDelete.title}
+                className="px-6 py-2"
+              >
+                Delete {itemToDelete.type}
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+      )}
     </Fragment>
   );
 }
