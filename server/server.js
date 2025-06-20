@@ -30,24 +30,24 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 // Enhanced CORS configuration for cross-origin authentication
-app.use(
-  cors({
-    origin: function(origin, callback) {
-      const allowedOrigins = ["http://localhost:5173", "https://ieee-beta-five.vercel.app"];
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        return callback(null, true);
-      } else {
-        console.log('CORS blocked origin:', origin);
-        return callback(null, false);
-      }
-    },
-    credentials: true, // Required for cookies, authorization headers with HTTPS
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
-  })
-);
+const corsOptions = {
+  origin: function(origin, callback) {
+    const allowedOrigins = ["http://localhost:5173", "https://ieee-beta-five.vercel.app"];
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    console.log('CORS blocked origin:', origin);
+    return callback(null, false);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 app.get("/", (req, res) => {
   res.json("hello");
 });
