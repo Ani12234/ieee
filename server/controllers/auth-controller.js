@@ -88,7 +88,10 @@ const loginUser = async (req, res) => {
       sameSite: isProduction ? 'none' : 'lax', // Needed for cross-origin in production
       domain: isProduction ? '.vercel.app' : undefined, // Set domain for production
       path: '/', // Ensure cookie is accessible across all paths
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      // Additional options for Vercel
+      sameSite: 'none',
+      secure: true
     };
     
     console.log('Cookie options:', cookieOptions);

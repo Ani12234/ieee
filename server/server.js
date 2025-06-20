@@ -32,7 +32,11 @@ const app = express();
 // Enhanced CORS configuration for cross-origin authentication
 const corsOptions = {
   origin: function(origin, callback) {
-    const allowedOrigins = ["http://localhost:5173", "https://ieee-beta-five.vercel.app"];
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://ieee-beta-five.vercel.app",
+      "https://ieee-bkw9.vercel.app"
+    ];
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1) {
       return callback(null, true);
