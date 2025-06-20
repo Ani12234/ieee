@@ -66,7 +66,7 @@ function AuthLogin() {
           Sign In
         </button>
 
-        <p className="mt-6 text-sm text-center text-white">
+        {/* <p className="mt-6 text-sm text-center text-white">
           Don't have an account?{" "}
           <Link
             to="/auth/register"
@@ -74,7 +74,7 @@ function AuthLogin() {
           >
             Register
           </Link>
-        </p>
+        </p> */}
       </form>
     </div>
   );
