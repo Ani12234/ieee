@@ -28,16 +28,16 @@ function AuthLogin() {
   }
 
   return (
-    <div className="relative mx-auto w-full max-w-md space-y-6 bg-black min-h-screen">
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[430px] h-[520px]"></div>
-
+    <div className="relative mx-auto w-full max-w-md min-h-screen bg-black">
       <form
         onSubmit={onSubmit}
-        className="relative bg-white/20 backdrop-blur-sm border-2 border-white/20 shadow-lg rounded-lg py-12 px-8"
+        className="relative bg-white/20 backdrop-blur-sm border-2 border-white/20 shadow-lg rounded-lg p-8"
       >
-        <h3 className="text-3xl font-semibold text-center text-white">
-          Sign in to your account
-        </h3>
+        <div className="text-center mb-8">
+          <h3 className="text-2xl font-semibold text-white">
+            Sign in to your account
+          </h3>
+        </div>
 
         <div className="mt-8 space-y-6">
           {/* Loop over form controls and render inputs dynamically */}
@@ -65,16 +65,6 @@ function AuthLogin() {
         >
           Sign In
         </button>
-
-        {/* <p className="mt-6 text-sm text-center text-white">
-          Don't have an account?{" "}
-          <Link
-            to="/auth/register"
-            className="text-blue-500 hover:underline font-medium"
-          >
-            Register
-          </Link>
-        </p> */}
       </form>
     </div>
   );

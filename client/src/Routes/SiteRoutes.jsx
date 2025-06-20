@@ -6,7 +6,7 @@ import Notfound from "../components/NotFound/Notfound";
 import Execoms from "../components/Execoms/Execoms";
 import ScrollToTop from "../components/NotFound/ScrollToTop";
 import AuthLogin from "../pages/login";
-import AuthRegister from "../pages/register";
+// import AuthRegister from "../pages/register";
 import CheckAuth from "../pages/common/index";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -44,7 +44,7 @@ const SiteRoutes = () => {
           }
         >
           <Route path="login" element={<AuthLogin />} />
-          <Route path="register" element={<AuthRegister />} />
+          {/* <Route path="register" element={<AuthRegister />} /> */}
         </Route>
         <Route
           path="/operate"
