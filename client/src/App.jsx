@@ -5,12 +5,15 @@ import Navbar from "./components/NavBar/Navbar.jsx";
 import Lenis from "lenis";
 import Loader from "./components/Loader/Loader.jsx";
 import { useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllEvents } from "./store/admin/events-slice";
+import { fetchAllMeetings } from "./store/admin/meetings-slice";
 
 const App = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const { isAuthenticated } = useSelector(state => state.auth);
+    const { isAuthenticated } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   
   // Reset loading state on logout
   const [hasLoggedOut, setHasLoggedOut] = useState(false);
@@ -28,6 +31,11 @@ const App = () => {
       setHasLoggedOut(true);
     }
   }, [isAuthenticated, location.pathname]);
+
+  useEffect(() => {
+    dispatch(fetchAllEvents());
+    dispatch(fetchAllMeetings());
+  }, [dispatch]);
 
   useEffect(() => {
     const lenis = new Lenis({

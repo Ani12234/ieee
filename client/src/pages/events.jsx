@@ -83,11 +83,7 @@ function EventsManager() {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  // Fetch data on component mount
-  useEffect(() => {
-    dispatch(fetchAllEvents());
-    dispatch(fetchAllMeetings());
-  }, [dispatch]);
+
 
   // Events submission handler
   function onEventSubmit(event) {

@@ -52,9 +52,7 @@ function MeetingsManager() {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
-  useEffect(() => {
-    dispatch(fetchAllMeetings());
-  }, [dispatch]);
+
 
   function onSubmit(event) {
     event.preventDefault();
