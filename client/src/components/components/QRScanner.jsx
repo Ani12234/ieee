@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { CSVLink } from "react-csv";
-import QrScanner from "react-qr-scanner";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import axios from 'axios';
-import * as XLSX from 'xlsx';
+
+const QrScanner = lazy(() => import("react-qr-scanner"));
+const CSVLink = lazy(() => import("react-csv").then(module => ({ default: module.CSVLink })));
 
 const QRScanner = () => {
   const [data, setData] = useState([]);
@@ -154,16 +154,17 @@ const QRScanner = () => {
     return null;
   };
 
-  const generateExcel = () => {
+  const generateExcel = async () => {
     if (data.length === 0) {
       setError("No data to export");
       return;
     }
 
+    const XLSX = await import('xlsx');
     const ws = XLSX.utils.json_to_sheet(data);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'QR Scanned Data');
-    XLSX.writeFile(wb, 'qr_scanned_data.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+    XLSX.writeFile(wb, "Attendance.xlsx");
     setDebugMessage("Excel file generated successfully");
   };
 
@@ -373,13 +374,15 @@ const QRScanner = () => {
 
         <div style={styles.scannerContainer}>
           {scannerActive && (
-            <QrScanner
-              delay={300}
-              style={styles.scanner}
-              onError={handleError}
-              onScan={handleScan}
-              constraints={constraints}
-            />
+            <Suspense fallback={<div style={{color: 'white'}}>Loading Scanner...</div>}>
+              <QrScanner
+                delay={300}
+                style={styles.scanner}
+                onError={handleError}
+                onScan={handleScan}
+                constraints={constraints}
+              />
+            </Suspense>
           )}
         </div>
 
@@ -421,14 +424,16 @@ const QRScanner = () => {
               >
                 Generate Excel
               </button>
-              <CSVLink 
-                data={data} 
-                headers={headers} 
-                filename={"Attendance.csv"} 
-                style={styles.button}
-              >
-                Download CSV
-              </CSVLink>
+              <Suspense fallback={<button style={styles.button} disabled>Loading...</button>}>
+                <CSVLink 
+                  data={data} 
+                  headers={headers} 
+                  filename={"Attendance.csv"} 
+                  style={styles.button}
+                >
+                  Download CSV
+                </CSVLink>
+              </Suspense>
               <button
                 onClick={saveToDatabase}
                 style={{

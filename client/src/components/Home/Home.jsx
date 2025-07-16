@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import Card from "../3Dmodel/Card";
+import React, { useEffect, lazy, Suspense } from "react";
+const Card = lazy(() => import("../3Dmodel/Card"));
 import Journey from "./Journey";
 import Success from "./Success";
 import ExecutiveTeam from "./ExecutiveTeam";
@@ -25,7 +25,9 @@ const Home = () => {
       />
       
       <div className="w-full h-screen">
-        <Card />
+        <Suspense fallback={<div className="w-full h-full flex items-center justify-center">Loading 3D Experience...</div>}>
+          <Card />
+        </Suspense>
       </div>
       <Journey />
       <Success />
